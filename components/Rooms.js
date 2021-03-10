@@ -8,7 +8,7 @@ export default function Rooms({ setRoomId, setSocket }) {
 
   useEffect(() => {
     socket.emit('listRooms', (callback) => {
-      setRoomsList(callback)
+      setRoomsList(['room1', ...callback])
     })
   }, [])
 

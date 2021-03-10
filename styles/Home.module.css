@@ -144,6 +144,10 @@
   overflow-x: hidden;
 }
 
+.chatList:last-child {
+  position: sticky;
+  bottom: 0;
+}
 .myMessage {
   background-color: rgb(181, 235, 236);
   text-align: right;

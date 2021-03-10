@@ -4,6 +4,7 @@ import styles from '../styles/Home.module.css'
 import axios from 'axios'
 
 export default function Chat({ socket, roomId, user }) {
+  let ends
   const messageRef = useRef(null)
   const [messageInput, setMessageInput] = useState({})
 
@@ -40,15 +41,15 @@ export default function Chat({ socket, roomId, user }) {
       const latestMessages = [...messages]
       if (messages.length > 50) latestMessages.shift()
       setMessages([...latestMessages, response])
+      setMessageInput({
+        message: '',
+        roomId: roomId,
+        sender: user._id,
+        from: user.name,
+      })
     })
 
-    if (messageRef.current) {
-      messageRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end',
-        inline: 'nearest',
-      })
-    }
+    ends.scrollIntoView({ behavior: 'instant' })
   })
 
   const getMessage = (event) => {
@@ -64,7 +65,7 @@ export default function Chat({ socket, roomId, user }) {
     <>
       <div className={styles.box}>
         <p className={styles.title}>Chat </p>
-        <div className={styles.chatList} ref={messageRef}>
+        <div className={styles.chatList}>
           {messages.map((msgObject) => (
             <Message
               msgObject={msgObject}
@@ -72,11 +73,17 @@ export default function Chat({ socket, roomId, user }) {
               key={msgObject._id}
             />
           ))}
+          <br
+            ref={(el) => {
+              ends = el
+            }}
+          />
         </div>
         <div className={styles.input}>
           <input
             className={styles.text}
             type="text"
+            value={messageInput.message}
             onChange={(event) => getMessage(event)}
           ></input>{' '}
           <button className={styles.send} onClick={sendMessage}>
