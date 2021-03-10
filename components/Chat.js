@@ -11,8 +11,13 @@ export default function Chat({ socket, roomId, user }) {
   const [messages, setMessages] = useState([])
 
   const sendMessage = () => {
-    socket.emit(roomId, messageInput)
-    // setMessageInput({ message: '' })
+    socket.emit('sendMessage', roomId, messageInput)
+    setMessageInput({
+      message: '',
+      roomId: roomId,
+      sender: user._id,
+      from: user.name,
+    })
   }
 
   useEffect(() => {
@@ -26,14 +31,6 @@ export default function Chat({ socket, roomId, user }) {
       console.log(data.data)
       setMessages(data.data)
     })
-
-    if (messageRef.current) {
-      messageRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end',
-        inline: 'nearest',
-      })
-    }
   }, [])
 
   useEffect(() => {
@@ -41,12 +38,6 @@ export default function Chat({ socket, roomId, user }) {
       const latestMessages = [...messages]
       if (messages.length > 50) latestMessages.shift()
       setMessages([...latestMessages, response])
-      setMessageInput({
-        message: '',
-        roomId: roomId,
-        sender: user._id,
-        from: user.name,
-      })
     })
 
     ends.scrollIntoView({ behavior: 'instant' })
